@@ -291,7 +291,7 @@ class Account(APIObject):
       raise build_api_error(
           APIError,
           response,
-          ''.join(api_object.get('errors', ['Failed to deposit money'])))
+          ', '.join(api_object.get('errors', ['Failed to deposit money'])))
     return api_obj
 
   def transfer_money(
