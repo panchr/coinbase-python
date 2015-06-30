@@ -282,6 +282,18 @@ class Account(APIObject):
           'Could not parse API response')
     return transaction
 
+  def deposit(self, amount, payment_method_id):
+    """https://developers.coinbase.com/api/v1#deposit-usd"""
+    data = encode_params({'account_id': self.id, 'amount': amount, 'payment_method_id': payment_method_id})
+    response = self.api_client._post('deposits', data = data)
+    api_obj = self.load(response.json())
+    if not api_obj.get('success', False):
+      raise build_api_error(
+          APIError,
+          response,
+          ''.join(api_object.get('errors', ['Failed to deposit money'])))
+    return api_obj
+
   def transfer_money(
       self, to_account_id, amount=None, amount_string=None,
       amount_currency_iso=None, notes=None, user_fee=None, referrer_id=None,
